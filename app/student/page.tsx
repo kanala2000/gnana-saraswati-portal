@@ -1,6 +1,62 @@
-import { GraduationCap, LogOut, CalendarDays, ClipboardCheck, BookOpen, Bell } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { GraduationCap, LogOut, CalendarDays, ClipboardCheck, BookOpen, Bell, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../lib/supabase";
 
 export default function StudentDashboard() {
+  const router = useRouter();
+  const [checking, setChecking] = useState(true);
+  const [studentName, setStudentName] = useState("Demo Student");
+  const [studentId, setStudentId] = useState("GSJC001");
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  useEffect(() => {
+    async function loadProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session?.user) {
+        router.replace("/login");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name, student_id, role")
+        .eq("id", session.user.id)
+        .single();
+
+      if (!profile || profile.role !== "student") {
+        await supabase.auth.signOut();
+        router.replace("/login");
+        return;
+      }
+
+      setStudentName(profile.full_name);
+      setStudentId(profile.student_id || "—");
+      setChecking(false);
+    }
+
+    loadProfile();
+  }, [router]);
+
+  async function handleLogout() {
+    setLoggingOut(true);
+    await supabase.auth.signOut();
+    router.replace("/login");
+  }
+
+  if (checking) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="flex items-center gap-2 text-sm font-bold text-slate-600">
+          <Loader2 className="animate-spin" size={20} /> Loading portal...
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-slate-50">
       <header className="border-b border-slate-200 bg-white">
@@ -12,8 +68,8 @@ export default function StudentDashboard() {
               <p className="text-xs text-slate-500">Student Portal • Bethamcherla</p>
             </div>
           </div>
-          <button className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600">
-            <LogOut size={16} /> Logout
+          <button onClick={handleLogout} disabled={loggingOut} className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-60">
+            <LogOut size={16} /> {loggingOut ? "Logging out..." : "Logout"}
           </button>
         </div>
       </header>
@@ -21,8 +77,8 @@ export default function StudentDashboard() {
       <div className="mx-auto max-w-7xl px-5 py-8">
         <div className="rounded-3xl bg-[#102a43] p-7 text-white">
           <p className="text-sm font-semibold text-blue-200">Welcome back</p>
-          <h1 className="mt-1 text-3xl font-black">Demo Student 👋</h1>
-          <p className="mt-2 text-sm text-slate-300">Student ID: GSJC001 • First Year MPC</p>
+          <h1 className="mt-1 text-3xl font-black">{studentName} 👋</h1>
+          <p className="mt-2 text-sm text-slate-300">Student ID: {studentId} • First Year MPC</p>
         </div>
 
         <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
