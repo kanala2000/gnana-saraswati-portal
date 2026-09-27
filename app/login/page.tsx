@@ -106,7 +106,7 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="mt-5 text-center text-xs text-slate-400">Secure authentication powered by Supabase.</p>
+          <div className="mt-5 flex items-center justify-between gap-4"><Link href="/forgot-password" className="text-xs font-bold text-blue-700">Forgot password?</Link><p className="text-right text-xs text-slate-400">Secure authentication powered by Supabase.</p></div>
         </div>
       </div>
     </main>
