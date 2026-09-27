@@ -21,7 +21,10 @@ export default function AcademicYearsPage(){
  }
  useEffect(()=>{load()},[router]);
  async function add(e:React.FormEvent){e.preventDefault();setError("");setSaving(true);
-  const {error}=await supabase.from("academic_years").insert({name,start_date:start||null,end_date:end||null});
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data: profile } = await supabase.from("profiles").select("college_id").eq("id", user?.id ?? "").single();
+  if (!profile?.college_id) { setError("Your admin account is not linked to a college yet."); setSaving(false); return; }
+  const {error}=await supabase.from("academic_years").insert({college_id:profile.college_id,name,start_date:start||null,end_date:end||null});
   if(error)setError(error.message);else{setName("");setStart("");setEnd("");await load()}setSaving(false);
  }
  async function remove(id:string){if(!confirm("Delete this academic year?"))return;const {error}=await supabase.from("academic_years").delete().eq("id",id);if(error)setError(error.message);else load();}
