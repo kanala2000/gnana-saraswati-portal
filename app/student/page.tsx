@@ -65,6 +65,7 @@ export default function StudentDashboard() {
     ["Assignments", "View assignments and due dates", BookOpen, "/student/assignments"],
     ["Fees", "View fee records and payment status", IndianRupee, "/student/fees"],
     ["Notices", "Read official college announcements", Bell, "/student/notices"],
+    ["My Profile", "View your academic and personal details", GraduationCap, "/student/profile"],
   ] as const;
 
   return (
