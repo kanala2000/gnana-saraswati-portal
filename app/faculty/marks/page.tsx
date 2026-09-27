@@ -11,6 +11,7 @@ type Student = { id: string; admission_number: string; profile_id: string };
 export default function FacultyMarksPage() {
   const [sections, setSections] = useState<Section[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [assignments, setAssignments] = useState<{section_id:string;subject_id:string}[]>([]);
   const [exams, setExams] = useState<Exam[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [names, setNames] = useState<Record<string, string>>({});
@@ -26,8 +27,8 @@ export default function FacultyMarksPage() {
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { window.location.href = "/login"; return; }
-      const { data: profile } = await supabase.from("profiles").select("role,college_id").eq("id", user.id).single();
-      if (!profile || profile.role !== "faculty") { await supabase.auth.signOut(); window.location.href = "/login"; return; }
+      const { data: profile } = await supabase.from("profiles").select("role,college_id,is_active").eq("id", user.id).single();
+      if (!profile || profile.role !== "faculty" || profile.is_active === false) { await supabase.auth.signOut(); window.location.href = "/login"; return; }
 
       const { data: faculty } = await supabase.from("faculty").select("id").eq("profile_id", user.id).single();
       if (!faculty) { setLoading(false); return; }
@@ -43,6 +44,7 @@ export default function FacultyMarksPage() {
       if (subjectIds.length) {
         const { data } = await supabase.from("subjects").select("id,name,code,max_marks").in("id", subjectIds).order("code");
         setSubjects(data || []);
+        setAssignments(assignments || []);
       }
       if (profile.college_id) {
         const { data } = await supabase.from("exams").select("id,name,exam_date").eq("college_id", profile.college_id).order("exam_date", { ascending: false });
@@ -85,6 +87,7 @@ export default function FacultyMarksPage() {
     const subject = subjects.find(s => s.id === subjectId);
     const max = subject?.max_marks ?? 0;
     if (!sectionId || !subjectId || !examId) { setMessage("Select section, subject and exam."); return; }
+    if (!assignments.some(a => a.section_id === sectionId && a.subject_id === subjectId)) { setMessage("This section and subject are not assigned to you."); return; }
     if (!max) { setMessage("Set max marks for this subject before entering marks."); return; }
 
     const rows = students.filter(s => values[s.id] !== undefined && values[s.id] !== "").map(s => ({
@@ -123,7 +126,7 @@ export default function FacultyMarksPage() {
           </select>
           <select value={subjectId} onChange={e => setSubjectId(e.target.value)} className="rounded-xl border border-white/10 bg-slate-900 px-4 py-3">
             <option value="">Select subject</option>
-            {subjects.map(s => <option key={s.id} value={s.id}>{s.code} — {s.name}{s.max_marks ? " (Max " + s.max_marks + ")" : ""}</option>)}
+            {subjects.filter(s => assignments.some(a => a.section_id === sectionId && a.subject_id === s.id)).map(s => <option key={s.id} value={s.id}>{s.code} — {s.name}{s.max_marks ? " (Max " + s.max_marks + ")" : ""}</option>)}
           </select>
           <select value={examId} onChange={e => setExamId(e.target.value)} className="rounded-xl border border-white/10 bg-slate-900 px-4 py-3">
             <option value="">Select exam</option>
