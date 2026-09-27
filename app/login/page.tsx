@@ -41,7 +41,7 @@ export default function LoginPage() {
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("role, full_name")
+      .select("role, full_name, is_active")
       .eq("id", data.user.id)
       .single();
 
@@ -52,7 +52,7 @@ export default function LoginPage() {
       return;
     }
 
-    const selectedRole = role.toLowerCase();
+    if (profile.is_active === false) {\n      await supabase.auth.signOut();\n      setError("This account is inactive. Please contact the college administrator.");\n      setLoading(false);\n      return;\n    }\n\n    const selectedRole = role.toLowerCase();
     if (profile.role !== selectedRole) {
       await supabase.auth.signOut();
       setError(`This account is registered as ${profile.role}, not ${selectedRole}.`);
