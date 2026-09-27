@@ -8,7 +8,7 @@ type Row = {
   day_of_week: number;
   start_time: string;
   end_time: string;
-  room_number: string | null;
+  room: string | null;
   subject: { name: string } | null;
   section: { name: string; year_level: number } | null;
 };
@@ -32,7 +32,7 @@ export default function FacultyTimetable() {
 
       const { data } = await supabase
         .from("timetables")
-        .select("id, day_of_week, start_time, end_time, room_number, subject:subjects(name), section:sections(name, year_level)")
+        .select("id, day_of_week, start_time, end_time, room, subject:subjects(name), section:sections(name, year_level)")
         .eq("faculty_id", faculty.id)
         .order("day_of_week")
         .order("start_time");
@@ -70,7 +70,7 @@ export default function FacultyTimetable() {
                           </p>
                         </div>
                         <div className="text-sm text-slate-300">
-                          {row.start_time} - {row.end_time}{row.room_number ? " • Room " + row.room_number : ""}
+                          {row.start_time} - {row.end_time}{row.room ? " • Room " + row.room : ""}
                         </div>
                       </div>
                     </div>
