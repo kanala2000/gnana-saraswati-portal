@@ -87,7 +87,8 @@ export default function PrincipalDashboard() {
     ["Timetable", "Review academic schedule", "/admin/timetable", CalendarDays],
     ["Academic Years", "Manage academic years", "/admin/academic-years", CalendarDays],
     ["Subjects", "Manage subjects", "/admin/subjects", BookOpen],
-    ["Institution Reports", "Live academic, attendance and finance overview", "/principal/reports", BarChart3],\n    ["Principal Analytics", "Course strength, attendance, performance and workload", "/principal/analytics", BarChart3],
+    ["Institution Reports", "Live academic, attendance and finance overview", "/principal/reports", BarChart3],
+    ["Principal Analytics", "Course strength, attendance, performance and workload", "/principal/analytics", BarChart3],
     ["Notifications", "Send official portal notifications", "/admin/notifications", Bell],
   ] as const;
 
