@@ -17,6 +17,7 @@ type Assignment = {
 export default function FacultyAssignments() {
   const [sections, setSections] = useState<Section[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [facultyPairs, setFacultyPairs] = useState<{section_id:string;subject_id:string}[]>([]);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [sectionId, setSectionId] = useState("");
   const [subjectId, setSubjectId] = useState("");
@@ -43,6 +44,7 @@ export default function FacultyAssignments() {
     if (subjectIds.length) {
       const { data } = await supabase.from("subjects").select("id, name").in("id", subjectIds).order("name");
       setSubjects(data || []);
+      setFacultyPairs(timetable || []);
     } else setSubjects([]);
 
     setAssignments((existing || []) as unknown as Assignment[]);
@@ -52,8 +54,8 @@ export default function FacultyAssignments() {
     const start = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { window.location.href = "/login"; return; }
-      const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-      if (!profile || profile.role !== "faculty") { await supabase.auth.signOut(); window.location.href = "/login"; return; }
+      const { data: profile } = await supabase.from("profiles").select("role,is_active").eq("id", user.id).single();
+      if (!profile || profile.role !== "faculty" || profile.is_active === false) { await supabase.auth.signOut(); window.location.href = "/login"; return; }
       const { data: faculty } = await supabase.from("faculty").select("id").eq("profile_id", user.id).single();
       if (!faculty) { setLoading(false); return; }
       await load(faculty.id);
@@ -66,6 +68,7 @@ export default function FacultyAssignments() {
     e.preventDefault();
     setMessage("");
     if (!sectionId || !subjectId || !title.trim()) { setMessage("Select section, subject and enter a title."); return; }
+    if (!facultyPairs.some(p => p.section_id === sectionId && p.subject_id === subjectId)) { setMessage("This section and subject are not assigned to you."); return; }
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { window.location.href = "/login"; return; }
@@ -102,7 +105,7 @@ export default function FacultyAssignments() {
           </select>
           <select value={subjectId} onChange={e => setSubjectId(e.target.value)} className="rounded-lg border border-white/10 bg-slate-900 px-4 py-3">
             <option value="">Select subject</option>
-            {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            {subjects.filter(s => facultyPairs.some(p => p.section_id === sectionId && p.subject_id === s.id)).map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
           <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Assignment title" className="rounded-lg border border-white/10 bg-slate-900 px-4 py-3" />
           <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className="rounded-lg border border-white/10 bg-slate-900 px-4 py-3" />
