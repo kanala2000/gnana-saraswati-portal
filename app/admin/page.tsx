@@ -123,7 +123,7 @@ export default function AdminDashboard() {
     ["Attendance", 0, ClipboardCheck, "/admin/attendance"],
     ["Marks", 0, BookOpen, "/admin/marks"],
     ["Timetable", 0, CalendarDays, "/admin/timetable"],
-    ["Faculty Assignments", 0, UserRoundCog, "/admin/faculty-assignments"],
+    ["Faculty Assignments", 0, UserRoundCog, "/admin/facultyassignments"],
   ] as const;
 
   return (
