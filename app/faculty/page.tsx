@@ -25,11 +25,11 @@ export default function FacultyDashboard() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("role, full_name")
+        .select("role, full_name, is_active")
         .eq("id", user.id)
         .single();
 
-      if (!profile || profile.role !== "faculty") {
+      if (!profile || profile.role !== "faculty" || profile.is_active === false) {
         await supabase.auth.signOut();
         window.location.href = "/login";
         return;
