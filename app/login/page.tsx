@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
 
+const roles = ["Student", "Faculty", "Admin", "Principal"];
+
 export default function LoginPage() {
   const router = useRouter();
   const [role, setRole] = useState("Student");
@@ -15,11 +17,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        router.replace("/student");
-      }
-    });
+    async function redirectExistingSession() {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session?.user) return;
+      const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.session.user.id).single();
+      if (profile?.role) router.replace(`/${profile.role}`);
+    }
+    redirectExistingSession();
   }, [router]);
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
@@ -70,9 +74,9 @@ export default function LoginPage() {
           <p className="mt-4 max-w-md leading-7 text-slate-600">Sign in to the college portal using your registered account.</p>
         </div>
         <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-xl">
-          <div className="grid grid-cols-3 rounded-xl bg-slate-100 p-1">
-            {["Student", "Faculty", "Admin"].map((item) => (
-              <button type="button" key={item} onClick={() => { setRole(item); setError(""); }} className={`rounded-lg px-3 py-2 text-sm font-bold ${role === item ? "bg-white text-blue-700 shadow-sm" : "text-slate-500"}`}>
+          <div className="grid grid-cols-4 rounded-xl bg-slate-100 p-1">
+            {roles.map((item) => (
+              <button type="button" key={item} onClick={() => { setRole(item); setError(""); }} className={`rounded-lg px-2 py-2 text-xs font-bold sm:text-sm ${role === item ? "bg-white text-blue-700 shadow-sm" : "text-slate-500"}`}>
                 {item}
               </button>
             ))}
@@ -83,7 +87,7 @@ export default function LoginPage() {
               <span className="mb-2 block text-sm font-bold text-slate-700">Email</span>
               <div className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-3">
                 <Mail size={18} className="text-slate-400" />
-                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required className="w-full outline-none" placeholder="student@gnanasaraswati.edu" />
+                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required className="w-full outline-none" placeholder="your registered email" />
               </div>
             </label>
             <label className="block">
