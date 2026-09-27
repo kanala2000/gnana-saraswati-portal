@@ -29,8 +29,8 @@ export default function PrincipalDashboard() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) { router.replace("/login"); return; }
 
-      const { data: p } = await supabase.from("profiles").select("full_name,role,college_id").eq("id", session.user.id).single();
-      if (!p || p.role !== "principal") {
+      const { data: p } = await supabase.from("profiles").select("full_name,role,college_id,is_active").eq("id", session.user.id).single();
+      if (!p || p.role !== "principal" || p.is_active === false) {
         await supabase.auth.signOut();
         router.replace("/login");
         return;
@@ -86,7 +86,7 @@ export default function PrincipalDashboard() {
     ["Timetable", "Review academic schedule", "/admin/timetable", CalendarDays],
     ["Academic Years", "Manage academic years", "/admin/academic-years", CalendarDays],
     ["Subjects", "Manage subjects", "/admin/subjects", BookOpen],
-    ["Institution Reports", "Live academic, attendance and finance overview", "/principal/reports", BarChart3],
+    ["Institution Reports", "Live academic, attendance and finance overview", "/principal/reports", BarChart3],\n    ["Principal Analytics", "Course strength, attendance, performance and workload", "/principal/analytics", BarChart3],
   ] as const;
 
   if (loading) return <main className="flex min-h-screen items-center justify-center bg-slate-50"><Loader2 className="animate-spin text-blue-700" size={28}/></main>;
