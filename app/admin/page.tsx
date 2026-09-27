@@ -7,6 +7,7 @@ import {
   Bell,
   BookOpen,
   CalendarDays,
+  ClipboardCheck,
   GraduationCap,
   IndianRupee,
   LayoutDashboard,
@@ -122,6 +123,7 @@ export default function AdminDashboard() {
     ["Attendance", 0, ClipboardCheck, "/admin/attendance"],
     ["Marks", 0, BookOpen, "/admin/marks"],
     ["Timetable", 0, CalendarDays, "/admin/timetable"],
+    ["Faculty Assignments", 0, UserRoundCog, "/admin/faculty-assignments"],
   ] as const;
 
   return (
