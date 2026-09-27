@@ -86,6 +86,7 @@ export default function PrincipalDashboard() {
     ["Timetable", "Review academic schedule", "/admin/timetable", CalendarDays],
     ["Academic Years", "Manage academic years", "/admin/academic-years", CalendarDays],
     ["Subjects", "Manage subjects", "/admin/subjects", BookOpen],
+    ["Institution Reports", "Live academic, attendance and finance overview", "/principal/reports", BarChart3],
   ] as const;
 
   if (loading) return <main className="flex min-h-screen items-center justify-center bg-slate-50"><Loader2 className="animate-spin text-blue-700" size={28}/></main>;
