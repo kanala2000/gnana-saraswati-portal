@@ -35,8 +35,8 @@ export default function FacultyStudentsPage() {
       const { data: faculty } = await supabase.from("faculty").select("id").eq("profile_id", user.id).single();
       if (!faculty) { setLoading(false); return; }
 
-      const { data: timetable } = await supabase.from("timetables").select("section_id").eq("faculty_id", faculty.id);
-      const ids = [...new Set((timetable || []).map(x => x.section_id))];
+      const { data: assignments } = await supabase.from("faculty_assignments").select("section_id").eq("faculty_id", faculty.id);
+      const ids = [...new Set((assignments || []).map(x => x.section_id))];
 
       if (ids.length) {
         const [{ data: sectionRows }, { data: studentRows }] = await Promise.all([
