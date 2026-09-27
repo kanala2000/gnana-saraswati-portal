@@ -5,6 +5,7 @@ import Link from "next/link";
 import { GraduationCap, LogOut, ClipboardCheck, BookOpen, CalendarDays, Bell, Loader2, IndianRupee } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
+import NotificationBell from "../components/NotificationBell";
 
 type StudentProfile = {
   full_name: string;
@@ -96,7 +97,7 @@ export default function StudentDashboard() {
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#102a43] text-white"><GraduationCap size={22} /></div>
             <div><p className="text-sm font-extrabold text-blue-700">GNANA SARASWATI JR. COLLEGE</p><p className="text-xs text-slate-500">Student Portal • Bethamcherla</p></div>
           </div>
-          <button onClick={handleLogout} className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50"><LogOut size={16} /> Logout</button>
+          <div className="flex items-center gap-2"><NotificationBell /><button onClick={handleLogout} className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50"><LogOut size={16} /> Logout</button></div>
         </div>
       </header>
 
