@@ -16,7 +16,8 @@ type StudentProfile = {
 export default function StudentDashboard() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
-  const [profile, setProfile] = useState<StudentProfile | null>(null);\n  const [summary, setSummary] = useState({ attendance: null as number | null, marks: null as number | null, feeBalance: 0, assignments: 0 });
+  const [profile, setProfile] = useState<StudentProfile | null>(null);
+  const [summary, setSummary] = useState({ attendance: null as number | null, marks: null as number | null, feeBalance: 0, assignments: 0 });
 
   useEffect(() => {
     async function loadStudent() {
@@ -86,7 +87,8 @@ export default function StudentDashboard() {
     ["Assignments", "View assignments and due dates", BookOpen, "/student/assignments"],
     ["Fees", "View fee records and payment status", IndianRupee, "/student/fees"],
     ["Notices", "Read official college announcements", Bell, "/student/notices"],
-    ["My Profile", "View your academic and personal details", GraduationCap, "/student/profile"],\n    ["Report Card", "Review your examination performance in a printable format", BookOpen, "/student/report-card"],
+    ["My Profile", "View your academic and personal details", GraduationCap, "/student/profile"],
+    ["Report Card", "Review your examination performance in a printable format", BookOpen, "/student/report-card"],
     ["My Documents", "Access your ID card, report card and fee statement", BookOpen, "/student/documents"],
   ] as const;
 
