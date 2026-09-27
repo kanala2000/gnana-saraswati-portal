@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { UserRound, LogOut } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
 
@@ -92,6 +93,7 @@ export default function FacultyDashboard() {
         </div>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <Link href="/faculty/profile" className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10"><UserRound className="text-sky-400"/><p className="mt-3 font-semibold">My Profile</p><p className="mt-1 text-sm text-slate-400">View your faculty account details.</p></Link>
           <Link href="/faculty/timetable" className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10">
             <p className="text-3xl font-bold">{stats.timetable}</p>
             <p className="mt-2 font-semibold">My Timetable</p>
