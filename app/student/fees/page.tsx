@@ -49,14 +49,14 @@ export default function StudentFeesPage() {
         {overdue > 0 && <div className="mt-5 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">{overdue} fee item{overdue > 1 ? "s are" : " is"} past the due date.</div>}
         <div className="mt-6"><select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="w-full rounded-xl border bg-white px-4 py-3 sm:w-72"><option value="all">All fee records</option><option value="pending">Pending</option><option value="partial">Partial</option><option value="paid">Paid</option><option value="waived">Waived</option></select></div>
         <div className="mt-6 overflow-hidden rounded-2xl border bg-white print:rounded-none print:border-0">
-          {filtered.length ? <div className="border-b bg-slate-50 px-5 py-4 print:block"><p className="text-lg font-black text-[#102a43]">Gnana Saraswati Jr. College</p><p className="text-xs text-slate-500">Student Fee Statement</p><p className="mt-2 text-sm">Generated on {new Date().toLocaleDateString("en-IN")}</p></div><div className="divide-y">{filtered.map(row => {
+          {filtered.length ? <><div className="border-b bg-slate-50 px-5 py-4 print:block"><p className="text-lg font-black text-[#102a43]">Gnana Saraswati Jr. College</p><p className="text-xs text-slate-500">Student Fee Statement</p><p className="mt-2 text-sm">Generated on {new Date().toLocaleDateString("en-IN")}</p></div><div className="divide-y">{filtered.map(row => {
             const balanceForRow = Math.max(Number(row.amount)-Number(row.paid_amount),0);
             return <div key={row.id} className="grid gap-4 px-5 py-5 sm:grid-cols-[1fr_auto_auto] sm:items-center">
               <div><p className="font-bold text-[#102a43]">{row.fee_type}</p><p className="text-xs text-slate-500">{row.due_date ? "Due " + row.due_date : "No due date"}{row.paid_at ? " • Paid " + new Date(row.paid_at).toLocaleDateString("en-IN") : ""}</p></div>
               <div className="text-sm"><p>Paid ₹{Number(row.paid_amount).toLocaleString("en-IN")} / ₹{Number(row.amount).toLocaleString("en-IN")}</p><p className="text-xs text-slate-500">Balance ₹{balanceForRow.toLocaleString("en-IN")}</p></div>
               <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold capitalize">{row.status}</span>
             </div>;
-          })}</div> : <p className="p-8 text-center text-sm text-slate-500">No fee records found.</p>}
+          })}</div></> : <p className="p-8 text-center text-sm text-slate-500">No fee records found.</p>}
         </div>
       </>}
     </div>
