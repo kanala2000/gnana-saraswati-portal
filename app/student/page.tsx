@@ -15,7 +15,7 @@ type StudentProfile = {
 export default function StudentDashboard() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
-  const [profile, setProfile] = useState<StudentProfile | null>(null);
+  const [profile, setProfile] = useState<StudentProfile | null>(null);\n  const [summary, setSummary] = useState({ attendance: null as number | null, marks: null as number | null, feeBalance: 0, assignments: 0 });
 
   useEffect(() => {
     async function loadStudent() {
@@ -36,9 +36,29 @@ export default function StudentDashboard() {
 
       const { data: student } = await supabase
         .from("students")
-        .select("admission_number")
+        .select("id, admission_number")
         .eq("profile_id", session.user.id)
         .single();
+
+      if (student) {
+        const [att, marks, fees, assignments] = await Promise.all([
+          supabase.from("attendance").select("status").eq("student_id", student.id),
+          supabase.from("marks").select("marks,max_marks").eq("student_id", student.id),
+          supabase.from("fees").select("amount,paid_amount").eq("student_id", student.id),
+          supabase.from("assignments").select("id,section_id").eq("section_id", (await supabase.from("students").select("section_id").eq("id", student.id).single()).data?.section_id ?? "")
+        ]);
+        const ar = att.data ?? [];
+        const present = ar.filter(x => x.status === "present" || x.status === "late").length;
+        const mr = marks.data ?? [];
+        const markPct = mr.length ? mr.reduce((n,x)=>n + (Number(x.marks)/Math.max(Number(x.max_marks),1))*100,0)/mr.length : null;
+        const fr = fees.data ?? [];
+        setSummary({
+          attendance: ar.length ? present/ar.length*100 : null,
+          marks: markPct,
+          feeBalance: Math.max(fr.reduce((n,x)=>n+Number(x.amount||0),0)-fr.reduce((n,x)=>n+Number(x.paid_amount||0),0),0),
+          assignments: assignments.data?.length ?? 0
+        });
+      }
 
       setProfile({ ...data, student_id: student?.admission_number ?? null });
       setChecking(false);
@@ -87,7 +107,14 @@ export default function StudentDashboard() {
           <p className="mt-2 text-sm text-slate-300">Admission Number: {profile.student_id ?? "Not assigned"}</p>
         </section>
 
-        <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-2xl border bg-white p-5"><p className="text-sm text-slate-500">Attendance</p><p className="mt-1 text-2xl font-black text-[#102a43]">{summary.attendance === null ? "—" : summary.attendance.toFixed(1)+"%"}</p></div>
+        <div className="rounded-2xl border bg-white p-5"><p className="text-sm text-slate-500">Marks Average</p><p className="mt-1 text-2xl font-black text-[#102a43]">{summary.marks === null ? "—" : summary.marks.toFixed(1)+"%"}</p></div>
+        <div className="rounded-2xl border bg-white p-5"><p className="text-sm text-slate-500">Fee Balance</p><p className="mt-1 text-2xl font-black text-[#102a43]">₹{summary.feeBalance.toLocaleString("en-IN")}</p></div>
+        <div className="rounded-2xl border bg-white p-5"><p className="text-sm text-slate-500">Assignments</p><p className="mt-1 text-2xl font-black text-[#102a43]">{summary.assignments}</p></div>
+      </div>
+
+      <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {modules.map(([title, description, Icon, href]) => (
             <Link key={title} href={href} className="rounded-2xl border border-slate-200 bg-white p-6 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
               <Icon className="text-blue-700" size={24} />
