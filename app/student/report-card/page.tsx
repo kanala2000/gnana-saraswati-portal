@@ -11,7 +11,7 @@ type Exam={id:string;name:string;exam_date:string|null};
 type Subject={id:string;name:string;code:string};
 
 export default function StudentReportCard(){
- const router=useRouter();const[loading,setLoading]=useState(true);const[name,setName]=useState("");const[admission,setAdmission]=useState("");const[rows,setRows]=useState<{exam:string;date:string;subject:string;code:string;marks:number;max:number;pct:number}[]>([]);
+ const router=useRouter();const[loading,setLoading]=useState(true);const[name,setName]=useState("");const[admission,setAdmission]=useState("");const[year,setYear]=useState("");const[section,setSection]=useState("");const[course,setCourse]=useState("");const[rows,setRows]=useState<{exam:string;date:string;subject:string;code:string;marks:number;max:number;pct:number}[]>([]);
  useEffect(()=>{(async()=>{
   const {data:{session}}=await supabase.auth.getSession();if(!session){router.replace("/login");return}
   const {data:p}=await supabase.from("profiles").select("full_name,role,is_active").eq("id",session.user.id).single();
