@@ -50,14 +50,14 @@ export default function AdminDashboard() {
 
       const { data: profile, error } = await supabase
         .from("profiles")
-        .select("full_name, role, college_id")
+        .select("full_name, role, college_id, is_active")
         .eq("id", session.user.id)
         .single();
 
       if (
         error ||
         !profile ||
-        !["admin", "principal"].includes(profile.role)
+        !["admin", "principal"].includes(profile.role) || profile.is_active === false
       ) {
         await supabase.auth.signOut();
         router.replace("/login");
