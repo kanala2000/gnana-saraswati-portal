@@ -13,7 +13,7 @@ type Row = {
   section: { name: string; year_level: number } | null;
 };
 
-const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
 export default function FacultyTimetable() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -54,7 +54,7 @@ export default function FacultyTimetable() {
 
         <div className="mt-8 space-y-6">
           {days.map((day, index) => {
-            const dayRows = rows.filter(r => r.day_of_week === index);
+            const dayRows = rows.filter(r => r.day_of_week === index + 1);
             if (!dayRows.length) return null;
             return (
               <section key={day}>
