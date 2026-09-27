@@ -17,6 +17,7 @@ import {
   UserRoundCog,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import NotificationBell from "../components/NotificationBell";
 
 type Stats = {
   students: number;
@@ -124,6 +125,7 @@ export default function AdminDashboard() {
     ["Marks", 0, BookOpen, "/admin/marks"],
     ["Timetable", 0, CalendarDays, "/admin/timetable"],
     ["Faculty Assignments", 0, UserRoundCog, "/admin/facultyassignments"],
+    ["Notifications", 0, Bell, "/admin/notifications"],
   ] as const;
 
   return (
@@ -141,12 +143,12 @@ export default function AdminDashboard() {
               <p className="text-xs text-slate-500">Administration Portal</p>
             </div>
           </div>
-          <button
+          <div className="flex items-center gap-2"><NotificationBell /><button
             onClick={logout}
             className="flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50"
           >
             <LogOut size={16} /> Logout
-          </button>
+          </button></div>
         </div>
       </header>
 
