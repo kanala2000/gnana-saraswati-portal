@@ -1,0 +1,17 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { ArrowLeft, Loader2, KeyRound, UserRound } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { supabase } from "../../lib/supabase";
+
+type Profile={full_name:string;email?:string;phone:string|null;role:string;is_active:boolean};
+type Faculty={employee_number:string;designation:string|null;department:string|null;joining_date:string|null};
+
+export default function FacultyProfilePage(){
+ const router=useRouter();const[loading,setLoading]=useState(true);const[profile,setProfile]=useState<Profile|null>(null);const[faculty,setFaculty]=useState<Faculty|null>(null);
+ useEffect(()=>{(async()=>{const{data:{session}}=await supabase.auth.getSession();if(!session){router.replace("/login");return}const{data:p}=await supabase.from("profiles").select("full_name,phone,role,is_active").eq("id",session.user.id).single();if(!p||p.role!=="faculty"||p.is_active===false){await supabase.auth.signOut();router.replace("/login");return}setProfile({...p,email:session.user.email});const{data:f}=await supabase.from("faculty").select("employee_number,designation,department,joining_date").eq("profile_id",session.user.id).single();setFaculty(f);setLoading(false)})()},[router]);
+ if(loading)return <main className="flex min-h-screen items-center justify-center bg-slate-950 text-white"><Loader2 className="animate-spin text-sky-400"/></main>;
+ return <main className="min-h-screen bg-slate-950 text-white"><header className="border-b border-white/10 bg-slate-900"><div className="mx-auto flex max-w-4xl items-center gap-3 px-6 py-5"><Link href="/faculty" className="rounded-lg p-2 hover:bg-white/10"><ArrowLeft size={18}/></Link><UserRound className="text-sky-400"/><div><h1 className="font-bold">My Profile</h1><p className="text-xs text-slate-400">Faculty account information</p></div></div></header><div className="mx-auto max-w-4xl px-6 py-8"><section className="rounded-2xl border border-white/10 bg-white/5 p-6"><div className="flex items-center gap-4"><div className="grid h-16 w-16 place-items-center rounded-full bg-sky-500/10 text-xl font-black text-sky-400">{(profile?.full_name||"F").split(" ").map(x=>x[0]).slice(0,2).join("")}</div><div><h2 className="text-2xl font-black">{profile?.full_name}</h2><p className="text-sm text-slate-400">{faculty?.designation||"Faculty"}{faculty?.department?" • "+faculty.department:""}</p></div></div><div className="mt-7 grid gap-4 sm:grid-cols-2">{[["Employee Number",faculty?.employee_number||"—"],["Email",profile?.email||"—"],["Phone",profile?.phone||"—"],["Department",faculty?.department||"—"],["Designation",faculty?.designation||"—"],["Joining Date",faculty?.joining_date||"—"]].map(([k,v])=><div key={k} className="rounded-xl border border-white/10 bg-slate-900/70 p-4"><p className="text-xs uppercase tracking-wide text-slate-500">{k}</p><p className="mt-1 font-semibold">{v}</p></div>)}</div><div className="mt-6 flex flex-wrap gap-3"><Link href="/forgot-password" className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-4 py-3 font-bold text-slate-950"><KeyRound size={17}/> Change Password</Link><Link href="/faculty" className="rounded-xl border border-white/10 px-4 py-3 font-bold hover:bg-white/10">Back to Dashboard</Link></div></section></div></main>;
+}
