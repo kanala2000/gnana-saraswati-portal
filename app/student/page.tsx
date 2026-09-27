@@ -24,11 +24,11 @@ export default function StudentDashboard() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, role")
+        .select("full_name, role, is_active")
         .eq("id", session.user.id)
         .single();
 
-      if (error || !data || data.role !== "student") {
+      if (error || !data || data.role !== "student" || data.is_active === false) {
         await supabase.auth.signOut();
         router.replace("/login");
         return;
@@ -65,7 +65,7 @@ export default function StudentDashboard() {
     ["Assignments", "View assignments and due dates", BookOpen, "/student/assignments"],
     ["Fees", "View fee records and payment status", IndianRupee, "/student/fees"],
     ["Notices", "Read official college announcements", Bell, "/student/notices"],
-    ["My Profile", "View your academic and personal details", GraduationCap, "/student/profile"],
+    ["My Profile", "View your academic and personal details", GraduationCap, "/student/profile"],\n    ["Report Card", "Review your examination performance in a printable format", BookOpen, "/student/report-card"],
   ] as const;
 
   return (
