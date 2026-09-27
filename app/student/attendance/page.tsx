@@ -21,8 +21,8 @@ export default function StudentAttendancePage() {
     async function load() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) { router.replace("/login"); return; }
-      const { data: profile } = await supabase.from("profiles").select("role").eq("id", session.user.id).single();
-      if (!profile || profile.role !== "student") { await supabase.auth.signOut(); router.replace("/login"); return; }
+      const { data: profile } = await supabase.from("profiles").select("role,is_active").eq("id", session.user.id).single();
+      if (!profile || profile.role !== "student" || profile.is_active === false) { await supabase.auth.signOut(); router.replace("/login"); return; }
 
       const { data: student } = await supabase.from("students").select("id").eq("profile_id", session.user.id).single();
       if (!student) { setLoading(false); return; }
