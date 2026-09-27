@@ -9,7 +9,7 @@ import { supabase } from "../../lib/supabase";
 type Stat={label:string;value:string;note:string};
 export default function PrincipalReports(){
  const router=useRouter(); const[loading,setLoading]=useState(true); const[stats,setStats]=useState<Stat[]>([]);
- useEffect(()=>{(async()=>{const{data:{session}}=await supabase.auth.getSession();if(!session){router.replace("/login");return}const{data:p}=await supabase.from("profiles").select("role").eq("id",session.user.id).single();if(!p||p.role!=="principal"){await supabase.auth.signOut();router.replace("/login");return}
+ useEffect(()=>{(async()=>{const{data:{session}}=await supabase.auth.getSession();if(!session){router.replace("/login");return}const{data:p}=await supabase.from("profiles").select("role,is_active").eq("id",session.user.id).single();if(!p||p.role!=="principal"||p.is_active===false){await supabase.auth.signOut();router.replace("/login");return}
  const [st,att,fees,marks,fa]=await Promise.all([
   supabase.from("students").select("id",{count:"exact",head:true}).eq("status","active"),
   supabase.from("attendance").select("status"),
