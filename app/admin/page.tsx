@@ -119,6 +119,9 @@ export default function AdminDashboard() {
     ["Sections", stats.sections, LayoutDashboard, "/admin/sections"],
     ["Notices", stats.notices, Bell, "/admin/notices"],
     ["Pending Fees", stats.pendingFees, IndianRupee, "/admin/fees"],
+    ["Attendance", 0, ClipboardCheck, "/admin/attendance"],
+    ["Marks", 0, BookOpen, "/admin/marks"],
+    ["Timetable", 0, CalendarDays, "/admin/timetable"],
   ] as const;
 
   return (
