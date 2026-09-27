@@ -87,6 +87,7 @@ export default function StudentDashboard() {
     ["Fees", "View fee records and payment status", IndianRupee, "/student/fees"],
     ["Notices", "Read official college announcements", Bell, "/student/notices"],
     ["My Profile", "View your academic and personal details", GraduationCap, "/student/profile"],\n    ["Report Card", "Review your examination performance in a printable format", BookOpen, "/student/report-card"],
+    ["My Documents", "Access your ID card, report card and fee statement", BookOpen, "/student/documents"],
   ] as const;
 
   return (
