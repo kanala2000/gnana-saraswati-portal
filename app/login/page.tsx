@@ -20,8 +20,8 @@ export default function LoginPage() {
     async function redirectExistingSession() {
       const { data } = await supabase.auth.getSession();
       if (!data.session?.user) return;
-      const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.session.user.id).single();
-      if (profile?.role) router.replace(`/${profile.role}`);
+      const { data: profile } = await supabase.from("profiles").select("role, is_active").eq("id", data.session.user.id).single();
+      if (profile?.role && profile.is_active !== false) router.replace(`/${profile.role}`);\n      else if (profile?.is_active === false) await supabase.auth.signOut();
     }
     redirectExistingSession();
   }, [router]);
