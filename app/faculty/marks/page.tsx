@@ -32,9 +32,9 @@ export default function FacultyMarksPage() {
       const { data: faculty } = await supabase.from("faculty").select("id").eq("profile_id", user.id).single();
       if (!faculty) { setLoading(false); return; }
 
-      const { data: timetable } = await supabase.from("timetables").select("section_id,subject_id").eq("faculty_id", faculty.id);
-      const sectionIds = [...new Set((timetable || []).map(x => x.section_id))];
-      const subjectIds = [...new Set((timetable || []).map(x => x.subject_id))];
+      const { data: assignments } = await supabase.from("faculty_assignments").select("section_id,subject_id").eq("faculty_id", faculty.id);
+      const sectionIds = [...new Set((assignments || []).map(x => x.section_id))];
+      const subjectIds = [...new Set((assignments || []).map(x => x.subject_id))];
 
       if (sectionIds.length) {
         const { data } = await supabase.from("sections").select("id,name,year_level").in("id", sectionIds).order("name");
