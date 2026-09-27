@@ -21,7 +21,8 @@ export default function LoginPage() {
       const { data } = await supabase.auth.getSession();
       if (!data.session?.user) return;
       const { data: profile } = await supabase.from("profiles").select("role, is_active").eq("id", data.session.user.id).single();
-      if (profile?.role && profile.is_active !== false) router.replace(`/${profile.role}`);\n      else if (profile?.is_active === false) await supabase.auth.signOut();
+      if (profile?.role && profile.is_active !== false) router.replace(`/${profile.role}`);
+      else if (profile?.is_active === false) await supabase.auth.signOut();
     }
     redirectExistingSession();
   }, [router]);
@@ -52,7 +53,14 @@ export default function LoginPage() {
       return;
     }
 
-    if (profile.is_active === false) {\n      await supabase.auth.signOut();\n      setError("This account is inactive. Please contact the college administrator.");\n      setLoading(false);\n      return;\n    }\n\n    const selectedRole = role.toLowerCase();
+    if (profile.is_active === false) {
+      await supabase.auth.signOut();
+      setError("This account is inactive. Please contact the college administrator.");
+      setLoading(false);
+      return;
+    }
+
+    const selectedRole = role.toLowerCase();
     if (profile.role !== selectedRole) {
       await supabase.auth.signOut();
       setError(`This account is registered as ${profile.role}, not ${selectedRole}.`);
