@@ -102,7 +102,8 @@ export default function FacultyDashboard() {
             <p className="mt-2 font-semibold">Assignments</p>
             <p className="mt-1 text-sm text-slate-400">Create and manage class assignments.</p>
           </Link>
-          <Link href="/faculty/students" className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10"><p className="font-semibold">My Students</p><p className="mt-1 text-sm text-slate-400">View students in your assigned sections.</p></Link>\n          <Link href="/faculty/attendance" className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10">
+          <Link href="/faculty/students" className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10"><p className="font-semibold">My Students</p><p className="mt-1 text-sm text-slate-400">View students in your assigned sections.</p></Link>
+          <Link href="/faculty/attendance" className="rounded-2xl border border-white/10 bg-white/5 p-6 hover:bg-white/10">
             <p className="font-semibold">Attendance</p>
             <p className="mt-1 text-sm text-slate-400">Enter attendance for assigned classes.</p>
           </Link>
