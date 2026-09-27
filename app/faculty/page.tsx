@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { UserRound, LogOut } from "lucide-react";
 import Link from "next/link";
 import { supabase } from "../lib/supabase";
+import NotificationBell from "../components/NotificationBell";
 
 type Faculty = {
   employee_number: string;
@@ -79,7 +80,7 @@ export default function FacultyDashboard() {
             <p className="text-sm text-sky-400">Gnana Saraswati Jr. College</p>
             <h1 className="text-2xl font-bold">Faculty Portal</h1>
           </div>
-          <button onClick={logout} className="rounded-lg border border-white/15 px-4 py-2 text-sm hover:bg-white/10">Logout</button>
+          <div className="flex items-center gap-2"><NotificationBell /><button onClick={logout} className="rounded-lg border border-white/15 px-4 py-2 text-sm hover:bg-white/10">Logout</button></div>
         </div>
       </header>
 
