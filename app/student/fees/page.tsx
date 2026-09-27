@@ -36,7 +36,7 @@ export default function StudentFeesPage() {
   const pending = rows.filter(x => x.status === "pending" || x.status === "partial").length;
   const overdue = rows.filter(x => x.due_date && new Date(x.due_date + "T23:59:59").getTime() < Date.now() && x.status !== "paid" && x.status !== "waived").length;
 
-  return <main className="min-h-screen bg-slate-50">
+  return <main aria-label="Student fees" className="min-h-screen bg-slate-50">
     <header className="border-b bg-white"><div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4"><div className="flex items-center gap-3"><Link href="/student" className="rounded-lg p-2 hover:bg-slate-100"><ArrowLeft size={18}/></Link><IndianRupee className="text-blue-700"/><h1 className="font-black text-[#102a43]">Fees</h1></div><button onClick={()=>window.print()} className="inline-flex items-center gap-2 rounded-xl bg-blue-700 px-4 py-2 text-sm font-bold text-white print:hidden"><Printer size={16}/> Print Statement</button></div></header>
     <div className="mx-auto max-w-6xl px-5 py-8 print:px-0 print:py-0">
       {loading ? <div className="flex justify-center py-20"><Loader2 className="animate-spin text-blue-700"/></div> : <>
