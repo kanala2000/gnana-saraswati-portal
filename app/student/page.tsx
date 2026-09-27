@@ -36,7 +36,7 @@ export default function StudentDashboard() {
 
       const { data: student } = await supabase
         .from("students")
-        .select("id, admission_number")
+        .select("id, admission_number, section_id")
         .eq("profile_id", session.user.id)
         .single();
 
