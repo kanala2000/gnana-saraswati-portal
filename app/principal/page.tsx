@@ -5,6 +5,7 @@ import Link from "next/link";
 import { BarChart3, Bell, BookOpen, CalendarDays, GraduationCap, IndianRupee, Loader2, LogOut, Users, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
+import NotificationBell from "../components/NotificationBell";
 
 type Profile = { full_name: string; role: string; college_id: string | null };
 
@@ -87,6 +88,7 @@ export default function PrincipalDashboard() {
     ["Academic Years", "Manage academic years", "/admin/academic-years", CalendarDays],
     ["Subjects", "Manage subjects", "/admin/subjects", BookOpen],
     ["Institution Reports", "Live academic, attendance and finance overview", "/principal/reports", BarChart3],\n    ["Principal Analytics", "Course strength, attendance, performance and workload", "/principal/analytics", BarChart3],
+    ["Notifications", "Send official portal notifications", "/admin/notifications", Bell],
   ] as const;
 
   if (loading) return <main className="flex min-h-screen items-center justify-center bg-slate-50"><Loader2 className="animate-spin text-blue-700" size={28}/></main>;
