@@ -28,7 +28,7 @@ export default function FacultyAssignments() {
 
   const load = async (facultyId: string) => {
     const [{ data: timetable }, { data: existing }] = await Promise.all([
-      supabase.from("timetables").select("section_id, subject_id").eq("faculty_id", facultyId),
+      supabase.from("faculty_assignments").select("section_id, subject_id").eq("faculty_id", facultyId),
       supabase.from("assignments").select("id, title, description, due_date, section:sections(name), subject:subjects(name)").eq("faculty_id", facultyId).order("due_date"),
     ]);
 
